@@ -8,7 +8,7 @@ import (
 
 var githubReg = regexp.MustCompile("^github.com/")
 
-func TestScanGoPath(t *testing.T) {
+func TestGoPath(t *testing.T) {
 	ds := GoPath()
 	GoPath() // confirm GoPath() can be called more than once
 	foundStdLib := false

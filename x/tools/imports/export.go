@@ -1,15 +1,28 @@
 package imports
 
+import "sync"
+
 // export.go exports some type and func of golang.org/x/tools/imports
+
+var (
+	exportedGoPath   map[string]*Pkg
+	exportedGoPathMu sync.RWMutex
+)
 
 // GoPath returns all importable packages (abs dir path => *Pkg).
 func GoPath() map[string]*Pkg {
+	exportedGoPathMu.Lock()
+	defer exportedGoPathMu.Unlock()
+	if exportedGoPath != nil {
+		return exportedGoPath
+	}
 	scanGoRootOnce.Do(scanGoRoot) // async
 	scanGoPathOnce.Do(scanGoPath)
 	<-scanGoRootDone
 	dirScanMu.Lock()
 	defer dirScanMu.Unlock()
-	return exportDirScan(dirScan)
+	exportedGoPath = exportDirScan(dirScan)
+	return exportedGoPath
 }
 
 func exportDirScan(ds map[string]*pkg) map[string]*Pkg {
