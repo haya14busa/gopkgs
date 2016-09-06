@@ -45,6 +45,18 @@ Usage of gopkgs:
 
 ![gopkgs_vim.gif (890×542)](https://raw.githubusercontent.com/haya14busa/i/3bdf4c81118c4f0261073a7f3144903623240edc/gopkgs/gopkgs_vim.gif)
 
+Sample usage of gopkgs in Vim: open godoc and import with [vim-go](https://github.com/fatih/vim-go) and [fzf](https://github.com/junegunn/fzf)
+
+```vim
+augroup gopkgs
+  autocmd!
+  autocmd FileType go command! -buffer Import exe 'GoImport' fzf#run({'source': 'gopkgs'})[0]
+  autocmd FileType go command! -buffer Doc exe 'GoDoc' fzf#run({'source': 'gopkgs'})[0]
+augroup END
+```
+
+Above Vim script is just a sample and isn't robust. I'm planning to create Vim plugin or ask vim-go to include the same feature.
+
 ### LICENSE
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
