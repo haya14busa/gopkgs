@@ -15,7 +15,7 @@ script:
   - go test -v -race ./...
 
 before_deploy:
-  - gox -output "dist/{{.Dir}}_{{.OS}}_{{.Arch}}"
+  - gox -output "dist/{{.Dir}}_{{.OS}}_{{.Arch}}" ./cmd/gopkgs/
 
 deploy:
   provider: releases
