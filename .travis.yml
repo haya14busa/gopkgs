@@ -10,13 +10,11 @@ os:
 
 before_install:
   - go get github.com/mitchellh/gox
-  - gox -build-toolchain
 
 script:
   - go test -v -race ./...
 
 before_deploy:
-  - mkdir -p dist
   - gox -output "dist/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
 deploy:
