@@ -1,0 +1,44 @@
+language: go
+
+go:
+  - 1.7
+  - tip
+
+os:
+  - linux
+  - osx
+
+before_install:
+  - go get github.com/mitchellh/gox
+  - gox -build-toolchain
+
+script:
+  - go test -v -race ./...
+
+before_deploy:
+  - mkdir -p dist
+  - gox -output "dist/{{.Dir}}_{{.OS}}_{{.Arch}}"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: pMpSqWsjmn1p7+mJB3XcDlvkD+Kldlho16Inqhl4JEPjM+MYg+L1lT91ZShgOldtgk6YY9e126cAKNOhwDhah4941euhng/PryVeDnxqaYJIlU6yL/60NasvAcp2dybSWvyTov549bjBTy0b4tz6vzAd244q39Z5Fg8NllUvGmNMKgKZHAC2GBLejP01+Xpd1Tj++//JfpD/kjef/Ck004pT64/xcZBh40Yj8QGNi08+wTeU1EuJcHdMnAcd011sVhDNIaQHfRkjVMahVuUApApguHZmodw0hlFhFIy7IKiQOHe52gMDpo549jGBKq2oQAHea/uPV7+EsPEv/YwlYfjb4mLD5pyM9oCK8LGjSeEKWj8BXVWQcLQZfp4Nid0A4oC5hyAaZD7MvWc8Gd4RPzu3h51m0K4cRQ2c6V7gRpkJWi1VfjNu//N0ZAWeDa1xQ72CAd0ddRNfRbNIFRxFkhwTIPNsjAG7GvGYdVYN1xT3LmnXLmbAuP+A48GGlBLBmPBPnfdcuQeNGlimegiOFcC3PzYN0H3HyMdIZ0c1UxXlt/TUiSK07rdfWjtdP9vvtMLfq67SLLhS8bamDUGBfSgJImSDcHqYUfgyz3YtNrf5n6Ubc59HF1ONxxdFJpBxoqqDnoojiUsQ9rzjSZ2xW83K5KajoedoMmXKTSpt9MM=
+  file:
+    - dist/gopkgs_darwin_386
+    - dist/gopkgs_darwin_amd64
+    - dist/gopkgs_freebsd_386
+    - dist/gopkgs_freebsd_amd64
+    - dist/gopkgs_freebsd_arm
+    - dist/gopkgs_linux_386
+    - dist/gopkgs_linux_amd64
+    - dist/gopkgs_linux_arm
+    - dist/gopkgs_netbsd_386
+    - dist/gopkgs_netbsd_amd64
+    - dist/gopkgs_netbsd_arm
+    - dist/gopkgs_openbsd_386
+    - dist/gopkgs_openbsd_amd64
+    - dist/gopkgs_windows_386.exe
+    - dist/gopkgs_windows_amd64.exe
+  skip_cleanup: true
+  on:
+    tags: true
