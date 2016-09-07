@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-var githubReg = regexp.MustCompile("^github.com/")
+var githubReg = regexp.MustCompile(`^github\.com/`)
 
 func TestGoPath(t *testing.T) {
 	ds := GoPath()
