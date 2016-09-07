@@ -55,7 +55,12 @@ augroup gopkgs
 augroup END
 ```
 
-Above Vim script is just a sample and isn't robust. I'm planning to create Vim plugin or ask vim-go to include the same feature.
+Above Vim script is just a sample and isn't robust. I'm planning to create or contribute Vim plugins to include the same feature.
+
+- https://github.com/rhysd/unite-go-import.vim
+  - [unite.vim](https://github.com/Shougo/unite.vim) (and
+    [vim-go](https://github.com/fatih/vim-go)) intergration for importing
+    package or opening godoc in Vim.
 
 ### LICENSE
 
