@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
@@ -21,6 +22,9 @@ func main() {
 		os.Exit(2)
 	}
 
+	w := bufio.NewWriter(os.Stdout)
+	defer w.Flush()
+
 	for _, pkg := range imports.GoPath() {
 		out := pkg.ImportPath
 		if *fullpath {
@@ -28,6 +32,6 @@ func main() {
 		} else if *short {
 			out = pkg.ImportPathShort
 		}
-		fmt.Println(out)
+		fmt.Fprintln(w, out)
 	}
 }
