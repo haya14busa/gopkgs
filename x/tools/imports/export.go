@@ -16,6 +16,7 @@ func GoPath() map[string]*Pkg {
 	if exportedGoPath != nil {
 		return exportedGoPath
 	}
+	populateIgnoreOnce.Do(populateIgnore)
 	scanGoRootOnce.Do(scanGoRoot) // async
 	scanGoPathOnce.Do(scanGoPath)
 	<-scanGoRootDone
