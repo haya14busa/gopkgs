@@ -11,7 +11,7 @@ import (
 
 var (
 	fullpath = flag.Bool("fullpath", false, `output absolute file path to package directory. ("/usr/lib/go/src/net/http")`)
-	short    = flag.Bool("short", false, `output vendorless import path ("net/http", "foo/bar/vendor/a/b")`)
+	short    = flag.Bool("short", true, `output vendorless import path ("net/http", "foo/bar/vendor/a/b")`)
 )
 
 func main() {
