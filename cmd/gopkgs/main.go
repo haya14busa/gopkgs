@@ -20,6 +20,7 @@ Use -f to custom the output using template syntax. The struct being passed to
 template is:
 	type Pkg struct {
 		Dir             string // absolute file path to Pkg directory ("/usr/lib/go/src/net/http")
+		Name            string // package name ("http", "a")
 		ImportPath      string // full Pkg import path ("net/http", "foo/bar/vendor/a/b")
 		ImportPathShort string // vendorless import path ("net/http", "a/b")
 	}
