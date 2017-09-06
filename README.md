@@ -35,11 +35,10 @@ go get -u github.com/haya14busa/gopkgs/cmd/gopkgs
 $ gopkgs -h
 Usage of gopkgs:
   -f string
-    	output format of the package (default "{{.ImportPath}}")
+    	output format of the package (default "{{.ImportPathShort}}")
 
 
-Use -f to custom the output using template syntax. The struct being passed to
-template is:
+Use -f to custom the output using template syntax. The struct being passed to template is:
     type Pkg struct {
         Dir             string // absolute file path to Pkg directory ("/usr/lib/go/src/net/http")
         Name            string // package name ("http", "a")
