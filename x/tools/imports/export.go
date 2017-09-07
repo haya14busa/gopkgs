@@ -49,7 +49,7 @@ func exportDirScan(ds map[string]*pkg) map[string]*Pkg {
 // Pkg represents exported type of pkg.
 type Pkg struct {
 	Dir             string // absolute file path to Pkg directory ("/usr/lib/go/src/net/http")
-	Name            string // package name ("http", "a")
+	Name            string // package name ("http")
 	ImportPath      string // full Pkg import path ("net/http", "foo/bar/vendor/a/b")
 	ImportPathShort string // vendorless import path ("net/http", "a/b")
 }
