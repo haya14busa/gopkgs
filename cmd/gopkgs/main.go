@@ -16,7 +16,7 @@ var (
 )
 
 var usageInfo = `
-Use -f to custom the output using template syntax. The struct being passed to template is:
+Use -format to custom the output using template syntax. The struct being passed to template is:
 	type Pkg struct {
 		Dir             string // absolute file path to Pkg directory ("/usr/lib/go/src/net/http")
 		Name            string // package name ("http")
