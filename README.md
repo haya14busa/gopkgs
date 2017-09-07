@@ -68,6 +68,9 @@ Above Vim script is just a sample and isn't robust. I'm planning to create or co
     [vim-go](https://github.com/fatih/vim-go)) intergration for importing
     package or opening godoc in Vim.
 
+### Alternative
+Beside `go list`, the `https://github.com/tpng/gopkgs` is another alternative that looks the packages from `$GOPATH/pkg` means list only packages that have been installed (either by go get or go install). Meanwhile `https://github.com/uudashr/gopkgs` looks for go packages in your `$GOPATH/src`.
+
 ### LICENSE
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
