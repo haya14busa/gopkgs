@@ -34,15 +34,31 @@ func GoPath() map[string]*Pkg {
 }
 
 func exportDirScan(ds map[string]*pkg) map[string]*Pkg {
+	var wg sync.WaitGroup
+	var rm sync.Mutex
 	r := make(map[string]*Pkg)
-	for path, pkg := range ds {
+
+	// async function
+	exportPkg := func(pkg *pkg) {
+		defer wg.Done()
 		p, err := exportPkg(pkg)
 		if err != nil {
-			continue
+			return
 		}
 
-		r[path] = p
+		rm.Lock()
+		defer rm.Unlock()
+		r[p.Dir] = p
 	}
+
+	wg.Add(len(ds))
+	go func() {
+		for _, pkg := range ds {
+			go exportPkg(pkg)
+		}
+	}()
+
+	wg.Wait()
 	return r
 }
 
