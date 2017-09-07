@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	format = flag.String("f", "{{.ImportPathShort}}", "output format of the package")
+	format   = flag.String("format", "", "custom output format")
 )
 
 var usageInfo = `
