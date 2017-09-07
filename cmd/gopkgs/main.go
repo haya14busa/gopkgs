@@ -12,6 +12,8 @@ import (
 )
 
 var (
+	fullpath = flag.Bool("fullpath", false, `output absolute file path to package directory. ("/usr/lib/go/src/net/http")`)
+	short    = flag.Bool("short", true, `output vendorless import path ("net/http", "foo/bar/vendor/a/b")`)
 	format   = flag.String("format", "", "custom output format")
 )
 
@@ -45,7 +47,16 @@ func main() {
 		os.Exit(2)
 	}
 
-	tpl, err := template.New("out").Parse(*format)
+	tplFormat := "{{.ImportPath}}"
+	if *format != "" {
+		tplFormat = *format
+	} else if *fullpath {
+		tplFormat = "{{.Dir}}"
+	} else if *short {
+		tplFormat = "{{.ImportPathShort}}"
+	}
+
+	tpl, err := template.New("out").Parse(tplFormat)
 	if err != nil {
 		fmt.Fprintln(os.Stderr)
 		os.Exit(2)
