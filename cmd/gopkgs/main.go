@@ -4,9 +4,8 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"html/template"
 	"os"
-	"text/tabwriter"
+	"text/template"
 
 	"github.com/haya14busa/gopkgs"
 )
@@ -14,12 +13,12 @@ import (
 var (
 	fullpath    = flag.Bool("fullpath", false, `output absolute file path to package directory. ("/usr/lib/go/src/net/http")`)
 	short       = flag.Bool("short", true, `output vendorless import path ("net/http", "foo/bar/vendor/a/b")`)
-	format      = flag.String("format", "", "custom output format")
-	includeName = flag.Bool("include-name", false, "fill Pkg.Name which can be used with -format flag")
+	f           = flag.String("f", "", "alternate format for the output using the syntax of template package. e.g. {{.Name}};{{ImportPathShort}}")
+	includeName = flag.Bool("include-name", false, "fill Pkg.Name which can be used with -f flag")
 )
 
 var usageInfo = `
-Use -format to custom the output using template syntax. The struct being passed to template is:
+Use -f to custom the output using template syntax. The struct being passed to template is:
 	type Pkg struct {
 		Dir             string // absolute file path to Pkg directory ("/usr/lib/go/src/net/http")
 		ImportPath      string // full Pkg import path ("net/http", "foo/bar/vendor/a/b")
@@ -33,9 +32,7 @@ Use -format to custom the output using template syntax. The struct being passed 
 func usage() {
 	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
-	fmt.Fprintln(os.Stderr)
-	tw := tabwriter.NewWriter(os.Stderr, 0, 0, 4, ' ', tabwriter.AlignRight)
-	fmt.Fprintln(tw, usageInfo)
+	fmt.Fprintln(os.Stderr, usageInfo)
 }
 
 func init() {
@@ -51,8 +48,8 @@ func main() {
 	}
 
 	tplFormat := "{{.ImportPath}}"
-	if *format != "" {
-		tplFormat = *format
+	if *f != "" {
+		tplFormat = *f
 	} else if *fullpath {
 		tplFormat = "{{.Dir}}"
 	} else if *short {
