@@ -35,20 +35,25 @@ go get -u github.com/haya14busa/gopkgs/cmd/gopkgs
 $ gopkgs -h
 Usage of gopkgs:
   -format string
-    	custom output format
+        custom output format
   -fullpath
-    	output absolute file path to package directory. ("/usr/lib/go/src/net/http")
+        output absolute file path to package directory. ("/usr/lib/go/src/net/http")
+  -include-name
+        fill Pkg.Name which can be used with -format flag
   -short
-    	output vendorless import path ("net/http", "foo/bar/vendor/a/b") (default true)
+        output vendorless import path ("net/http", "foo/bar/vendor/a/b") (default true)
 
 
 Use -format to custom the output using template syntax. The struct being passed to template is:
     type Pkg struct {
         Dir             string // absolute file path to Pkg directory ("/usr/lib/go/src/net/http")
-        Name            string // package name ("http")
         ImportPath      string // full Pkg import path ("net/http", "foo/bar/vendor/a/b")
         ImportPathShort string // vendorless import path ("net/http", "a/b")
+
+        // It can be empty. It's filled only when -include-name flag is true.
+        Name string // package name ("http")
     }
+
 ```
 
 ### Vim
