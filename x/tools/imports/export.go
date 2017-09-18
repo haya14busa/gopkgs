@@ -1,10 +1,6 @@
 package imports
 
 import (
-	"fmt"
-	"go/parser"
-	"go/token"
-	"log"
 	"os"
 	"strings"
 	"sync"
@@ -37,11 +33,7 @@ func GoPath() map[string]*Pkg {
 func exportDirScan(ds map[string]*pkg) map[string]*Pkg {
 	r := make(map[string]*Pkg)
 	for path, pkg := range ds {
-		var err error
-		r[path], err = exportPkg(pkg)
-		if err != nil {
-			log.Printf("gopkgs: %v", err)
-		}
+		r[path] = exportPkg(pkg)
 	}
 	return r
 }
@@ -49,24 +41,16 @@ func exportDirScan(ds map[string]*pkg) map[string]*Pkg {
 // Pkg represents exported type of pkg.
 type Pkg struct {
 	Dir             string // absolute file path to Pkg directory ("/usr/lib/go/src/net/http")
-	Name            string // package name ("http")
 	ImportPath      string // full Pkg import path ("net/http", "foo/bar/vendor/a/b")
 	ImportPathShort string // vendorless import path ("net/http", "a/b")
 }
 
-func exportPkg(p *pkg) (*Pkg, error) {
-	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, p.dir, notGoTestFile, parser.PackageClauseOnly)
-	if err != nil {
-		return nil, err
+func exportPkg(p *pkg) *Pkg {
+	return &Pkg{
+		Dir:             p.dir,
+		ImportPath:      p.importPath,
+		ImportPathShort: p.importPathShort,
 	}
-
-	for name := range pkgs {
-		// one package is valid, the test package ignored
-		return &Pkg{Dir: p.dir, Name: name, ImportPath: p.importPath, ImportPathShort: p.importPathShort}, nil
-	}
-
-	return nil, fmt.Errorf("no exported package found on %s", p.dir)
 }
 
 func notGoTestFile(f os.FileInfo) bool {
