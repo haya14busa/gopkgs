@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/parser"
 	"go/token"
+	"log"
 	"os"
 	"strings"
 	"sync"
@@ -34,31 +35,14 @@ func GoPath() map[string]*Pkg {
 }
 
 func exportDirScan(ds map[string]*pkg) map[string]*Pkg {
-	var wg sync.WaitGroup
-	var rm sync.Mutex
 	r := make(map[string]*Pkg)
-
-	// async function
-	exportPkg := func(pkg *pkg) {
-		defer wg.Done()
-		p, err := exportPkg(pkg)
+	for path, pkg := range ds {
+		var err error
+		r[path], err = exportPkg(pkg)
 		if err != nil {
-			return
+			log.Printf("gopkgs: %v", err)
 		}
-
-		rm.Lock()
-		defer rm.Unlock()
-		r[p.Dir] = p
 	}
-
-	wg.Add(len(ds))
-	go func() {
-		for _, pkg := range ds {
-			go exportPkg(pkg)
-		}
-	}()
-
-	wg.Wait()
 	return r
 }
 
