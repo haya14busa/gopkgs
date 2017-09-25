@@ -1,10 +1,6 @@
 package imports
 
-import (
-	"os"
-	"strings"
-	"sync"
-)
+import "sync"
 
 // export.go exports some type and func of golang.org/x/tools/imports
 
@@ -46,13 +42,5 @@ type Pkg struct {
 }
 
 func exportPkg(p *pkg) *Pkg {
-	return &Pkg{
-		Dir:             p.dir,
-		ImportPath:      p.importPath,
-		ImportPathShort: p.importPathShort,
-	}
-}
-
-func notGoTestFile(f os.FileInfo) bool {
-	return !strings.HasSuffix(f.Name(), "_test.go")
+	return &Pkg{Dir: p.dir, ImportPath: p.importPath, ImportPathShort: p.importPathShort}
 }
