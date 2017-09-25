@@ -9,8 +9,7 @@
 gopkgs outputs list of importable Go packages.
 
 By using the same implementation as [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports),
-it's faster than [go list ...](https://golang.org/cmd/go/#hdr-List_packages)
-(but gopkgs do not provide rich options like `-f` in `go list`)
+it's faster than [go list ...](https://golang.org/cmd/go/#hdr-List_packages) and it also has `-f` option.
 
 gopkgs cares .goimportsignore which was introduced by https://github.com/golang/go/issues/16386
 since it uses the same implementation as [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports).
@@ -35,10 +34,26 @@ go get -u github.com/haya14busa/gopkgs/cmd/gopkgs
 ```
 $ gopkgs -h
 Usage of gopkgs:
+  -f string
+        alternate format for the output using the syntax of template package. e.g. {{.Name}};{{ImportPathShort}}
   -fullpath
         output absolute file path to package directory. ("/usr/lib/go/src/net/http")
+  -include-name
+        fill Pkg.Name which can be used with -f flag
   -short
-        output vendorless import path ("net/http", "foo/bar/vendor/a/b")
+        output vendorless import path ("net/http", "foo/bar/vendor/a/b") (default true)
+
+
+Use -f to custom the output using template syntax. The struct being passed to template is:
+    type Pkg struct {
+        Dir             string // absolute file path to Pkg directory ("/usr/lib/go/src/net/http")
+        ImportPath      string // full Pkg import path ("net/http", "foo/bar/vendor/a/b")
+        ImportPathShort string // vendorless import path ("net/http", "a/b")
+
+        // It can be empty. It's filled only when -include-name flag is true.
+        Name string // package name ("http")
+    }
+
 ```
 
 ### Vim
