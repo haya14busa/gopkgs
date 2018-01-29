@@ -63,19 +63,24 @@ Use -f to custom the output using template syntax. The struct being passed to te
 Sample usage of gopkgs in Vim: open godoc and import with [vim-go](https://github.com/fatih/vim-go) and [fzf](https://github.com/junegunn/fzf)
 
 ```vim
+function! s:get_go_pkgs()
+    function! s:go_import(pk)
+        execute 'GoImport' a:pk
+    endfunction
+    call fzf#run(fzf#wrap({'source': 'gopkgs | sort | uniq', 'sink': function('s:go_import')}))
+endfunction
+function! s:get_go_doc()
+    function! s:go_doc(pk)
+        execute 'GoDoc' a:pk
+    endfunction
+    call fzf#run(fzf#wrap({'source': 'gopkgs | sort | uniq', 'sink': function('s:go_doc')}))
+endfunction
 augroup gopkgs
-  autocmd!
-  autocmd FileType go command! -buffer Import exe 'GoImport' fzf#run({'source': 'gopkgs'})[0]
-  autocmd FileType go command! -buffer Doc exe 'GoDoc' fzf#run({'source': 'gopkgs'})[0]
+    autocmd!
+    autocmd FileType go command! -buffer GI exe s:get_go_pkgs()
+    autocmd FileType go command! -buffer GD exe s:get_go_doc()
 augroup END
 ```
-
-Above Vim script is just a sample and isn't robust. I'm planning to create or contribute Vim plugins to include the same feature.
-
-- https://github.com/rhysd/unite-go-import.vim
-  - [unite.vim](https://github.com/Shougo/unite.vim) (and
-    [vim-go](https://github.com/fatih/vim-go)) intergration for importing
-    package or opening godoc in Vim.
 
 ### LICENSE
 
