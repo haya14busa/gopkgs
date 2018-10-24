@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sort"
+	"strings"
 	"text/template"
 
 	"github.com/haya14busa/gopkgs"
@@ -39,6 +41,62 @@ func init() {
 	flag.Usage = usage
 }
 
+type ByPath []*gopkgs.Pkg
+
+func (pkgs ByPath) Len() int {
+	return len(pkgs)
+}
+func (pkgs ByPath) Swap(i, j int) {
+	pkgs[i], pkgs[j] = pkgs[j], pkgs[i]
+}
+func (pkgs ByPath) Less(i, j int) bool {
+	return strings.Compare(pkgs[i].ImportPath, pkgs[j].ImportPath) < 0
+}
+
+type ByShortPath []*gopkgs.Pkg
+
+func (pkgs ByShortPath) Len() int {
+	return len(pkgs)
+}
+func (pkgs ByShortPath) Swap(i, j int) {
+	pkgs[i], pkgs[j] = pkgs[j], pkgs[i]
+}
+func (pkgs ByShortPath) Less(i, j int) bool {
+	return strings.Compare(pkgs[i].ImportPathShort, pkgs[j].ImportPathShort) < 0
+}
+
+type ByFullPath []*gopkgs.Pkg
+
+func (pkgs ByFullPath) Len() int {
+	return len(pkgs)
+}
+func (pkgs ByFullPath) Swap(i, j int) {
+	pkgs[i], pkgs[j] = pkgs[j], pkgs[i]
+}
+func (pkgs ByFullPath) Less(i, j int) bool {
+	return strings.Compare(pkgs[i].Dir, pkgs[j].Dir) < 0
+}
+
+func uniq(s []*gopkgs.Pkg, f func(*gopkgs.Pkg) string) []*gopkgs.Pkg {
+	l := len(s)
+	if l == 0 || l == 1 {
+		return s
+	}
+
+	u := make([]*gopkgs.Pkg, 0, l)
+	prev := f(s[0])
+	for _, p := range s[1:] {
+		cur := f(p)
+		if prev == cur {
+			continue
+		}
+		u = append(u, p)
+		prev = cur
+	}
+
+	return u
+}
+
 func main() {
 	flag.Parse()
 
@@ -67,7 +125,20 @@ func main() {
 
 	opt := gopkgs.DefaultOption()
 	opt.IncludeName = *includeName
-	for _, pkg := range gopkgs.Packages(opt) {
+	pkgs := gopkgs.Packages(opt)
+
+	if *fullpath {
+		sort.Sort(ByFullPath(pkgs))
+		// Fullpaths is already unique
+	} else if *short {
+		sort.Sort(ByShortPath(pkgs))
+		pkgs = uniq(pkgs, func(p *gopkgs.Pkg) string { return p.ImportPathShort })
+	} else {
+		sort.Sort(ByPath(pkgs))
+		pkgs = uniq(pkgs, func(p *gopkgs.Pkg) string { return p.ImportPath })
+	}
+
+	for _, pkg := range pkgs {
 		tpl.Execute(w, pkg)
 		fmt.Fprintln(w)
 	}
